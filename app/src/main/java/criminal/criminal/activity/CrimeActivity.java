@@ -11,21 +11,11 @@ import criminal.criminal.fragment.CrimeFragment;
 /**
  * Created by 磊 on 2015/10/27.
  */
-public class CrimeActivity extends AppCompatActivity {
+public class CrimeActivity extends SingleFragmentActivity {
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crime);
-
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-        if (fragment == null){
-            fragment = new CrimeFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragmentContainer,fragment)
-                    .commit();
-        }
-
+    protected Fragment createFragment() {
+        return new CrimeFragment();
     }
 }
