@@ -1,6 +1,7 @@
 package criminal.criminal.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,10 +21,10 @@ public class CrimeLab {
     private CrimeLab(Context appContext) {
         mAppContext = appContext;
         mCrimes = new ArrayList<Crime>();
-        for (int i =0; i<100;i++){
+        for (int i = 0; i < 100; i++) {
             Crime c = new Crime();
-            c.setTitle("阿杂 : "+i);
-            c.setSolved(i%2==0);
+            c.setTitle("阿杂 : " + i);
+            c.setSolved(i % 2 == 0);
             mCrimes.add(c);
         }
     }
@@ -35,13 +36,13 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
-    public ArrayList<Crime> getCrimes(){
+    public ArrayList<Crime> getCrimes() {
         return mCrimes;
     }
 
-    public Crime getCrime(UUID id){
-        for (Crime c:mCrimes){
-            if (c.getId()==id){
+    public Crime getCrime(UUID id) {
+        for (Crime c : mCrimes) {
+            if (c.getId().equals(id)) {
                 return c;
             }
         }

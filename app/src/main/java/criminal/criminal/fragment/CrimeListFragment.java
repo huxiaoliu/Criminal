@@ -1,15 +1,16 @@
 package criminal.criminal.fragment;
 
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import criminal.criminal.R;
+import criminal.criminal.activity.CrimePagerActivity;
 import criminal.criminal.adapter.CrimeListAdapter;
 import criminal.criminal.model.Crime;
 import criminal.criminal.util.CrimeLab;
@@ -26,9 +27,7 @@ public class CrimeListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.crimes_title);
         mCrimes = CrimeLab.get(getActivity()).getCrimes();
-
-        CrimeListAdapter adapter = new CrimeListAdapter(getActivity(),R.layout.list_item_crime,mCrimes);
-
+        CrimeListAdapter adapter = new CrimeListAdapter(getActivity(), R.layout.list_item_crime, mCrimes);
         setListAdapter(adapter);
     }
 
@@ -37,7 +36,14 @@ public class CrimeListFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
 
         Crime c = ((CrimeListAdapter) getListAdapter()).getItem(position);
-        Toast.makeText(getActivity(), c.getTitle() + "was clicked", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(getActivity(), CrimePagerActivity.class);
+        i.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
+        startActivity(i);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((CrimeListAdapter)getListAdapter()).notifyDataSetChanged();
     }
 }
