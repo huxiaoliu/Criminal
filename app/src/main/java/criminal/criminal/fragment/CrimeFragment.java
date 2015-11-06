@@ -19,13 +19,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.Date;
 import java.util.UUID;
 
 import criminal.criminal.R;
-import criminal.criminal.activity.CrimeListActivity;
 import criminal.criminal.model.Crime;
 import criminal.criminal.util.CrimeLab;
 
@@ -136,6 +134,12 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             mDateButton.setText(mCrime.getDate().toString());
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).saveCrimes();
     }
 
     @Override
