@@ -36,6 +36,7 @@ public class DatePickerFragment extends DialogFragment{
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        //从argument获取从CrimeFragment传递过来的Date对象
         mDate = (Date) getArguments().getSerializable(EXTRA_DATE);
 
         //Create a Calendar to get the year,month,and day
@@ -49,6 +50,7 @@ public class DatePickerFragment extends DialogFragment{
                 .inflate(R.layout.dialog_date, null);
 
         DatePicker datePicker = (DatePicker) v.findViewById(R.id.dialog_date_datePicker);
+        //初始化对话框，并未对话框建立监听器
         datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -72,6 +74,10 @@ public class DatePickerFragment extends DialogFragment{
 
     }
 
+    /**
+     *
+     * @param resultCode
+     */
     private void sendRequest(int resultCode){
         if (getTargetFragment() == null)
             return;

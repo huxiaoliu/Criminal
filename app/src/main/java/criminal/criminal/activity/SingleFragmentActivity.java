@@ -1,10 +1,7 @@
 package criminal.criminal.activity;
 
 
-
 import android.os.Bundle;
-
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,20 +12,21 @@ import criminal.criminal.R;
  * Created by asus on 2015/10/30.
  */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
-    protected abstract android.support.v4.app.Fragment createFragment();
+    protected abstract Fragment createFragment();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
 
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-        if (fragment == null){
+        if (fragment == null) {
             fragment = createFragment();
-            fm.beginTransaction().add(R.id.fragmentContainer,fragment).commit();
+            manager.beginTransaction()
+                    .add(R.id.fragmentContainer, fragment)
+                    .commit();
         }
-
-
     }
 }
+

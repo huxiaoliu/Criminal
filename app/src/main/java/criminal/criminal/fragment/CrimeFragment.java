@@ -1,25 +1,31 @@
 package criminal.criminal.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.UUID;
 
 import criminal.criminal.R;
+import criminal.criminal.activity.CrimeListActivity;
 import criminal.criminal.model.Crime;
 import criminal.criminal.util.CrimeLab;
 
@@ -28,13 +34,13 @@ import criminal.criminal.util.CrimeLab;
  */
 public class CrimeFragment extends Fragment {
     public static final String EXTRA_CRIME_ID = "com.criminal.crime_id";
+    private static final String DIALOG_DATE = "date";
+    private static final int REQUEST_DATE = 0;
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
-    private static final String DIALOG_DATE = "date";
-    private static final int REQUEST_DATE = 0;
 
     /*
     附加argument bundle给fragment，需调用Fragment.setArguments(Bundle)方法
@@ -53,12 +59,20 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(EXTRA_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
+        setHasOptionsMenu(true);
     }
 
-    @Nullable
+    @TargetApi(11)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (NavUtils.getParentActivityName(getActivity()) != null)
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
 
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
@@ -88,7 +102,7 @@ public class CrimeFragment extends Fragment {
                 DatePickerFragment dialog = DatePickerFragment
                         .newInstance(mCrime.getDate());
                 //先不管 这里在报错,后来发现因为V4包的问题
-                //设置目标Fragment
+                //设置目标Fragment和请求码
                 dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                 dialog.show(fm, DIALOG_DATE);
             }
@@ -108,6 +122,11 @@ public class CrimeFragment extends Fragment {
     }
 
     //响应DatePicker对话框
+    /*
+    requestCode:与传入setTargetFragment(...)相匹配的请求代码，用以告知目标fragment返回结果来自于哪里
+    resultCode：决定下一步该采取什么行动的结果代码
+    data：含有extra数据信息的Intent
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -117,6 +136,30 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             mDateButton.setText(mCrime.getDate().toString());
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+//                Intent i = new Intent(getActivity(), CrimeListActivity.class);
+//                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//               startActivity(i);
+//                getActivity().finish();
+//
+//                if (NavUtils.getParentActivityName(getActivity()) == null)
+//                {
+//                    Toast.makeText(getActivity(),"找不到父Activity",Toast.LENGTH_SHORT).show();
+//                }
+                if (NavUtils.getParentActivityName(getActivity()) != null)
+                    NavUtils.navigateUpFromSameTask(getActivity());
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
+
 }
